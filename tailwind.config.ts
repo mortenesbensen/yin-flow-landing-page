@@ -25,8 +25,8 @@ export default {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         primary: {
-          DEFAULT: 'hsl(10, 80%, 80%)', // Soft terracotta
-          foreground: 'hsl(260, 20%, 15%)'
+          DEFAULT: 'hsl(10, 80%, 90%)', // Softer, lighter coral
+          foreground: 'hsl(10, 50%, 20%)'
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
@@ -63,8 +63,8 @@ export default {
           ring: 'hsl(var(--sidebar-ring))'
         },
         yin: {
-          light: '#FFE4E1', // Soft terracotta/misty rose
-          DEFAULT: '#F08080', // Light coral
+          light: '#FDE1D3', // Soft peach
+          DEFAULT: '#FFDEE2', // Soft pink
           dark: '#CD5C5C', // Indian red
           deep: '#8B4513', // Saddle brown (for deep text)
           text: '#2F4F4F' // Dark slate gray
