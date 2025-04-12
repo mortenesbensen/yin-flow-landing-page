@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "./ui/button";
@@ -43,10 +42,9 @@ const Navbar = () => {
           href="#home"
           className="text-2xl font-serif text-yin-deep font-semibold"
         >
-          Yin Flow
+          Line Jakobsen Yin Yoga
         </a>
 
-        {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-8">
           {navLinks.map((link) => (
             <a
@@ -66,7 +64,6 @@ const Navbar = () => {
           </Button>
         </div>
 
-        {/* Mobile Menu Button */}
         <button
           className="md:hidden text-yin-text"
           onClick={() => setIsOpen(!isOpen)}
@@ -75,7 +72,6 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-white shadow-lg absolute top-full left-0 right-0 py-4 px-4 animate-fade-in">
           <div className="flex flex-col space-y-4">

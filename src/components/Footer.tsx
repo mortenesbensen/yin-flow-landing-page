@@ -1,4 +1,3 @@
-
 import { Heart, Instagram, Facebook, Twitter } from "lucide-react";
 
 const Footer = () => {
@@ -9,7 +8,7 @@ const Footer = () => {
       <div className="container mx-auto">
         <div className="grid md:grid-cols-3 gap-10">
           <div>
-            <h3 className="text-xl font-serif font-medium mb-4">Yin Flow</h3>
+            <h3 className="text-xl font-serif font-medium mb-4">Line Jakobsen Yin Yoga</h3>
             <p className="text-gray-300 mb-4">
               Discover the transformative practice of Yin Yoga, where stillness becomes strength 
               and balance leads to growth.
