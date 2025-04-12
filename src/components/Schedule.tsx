@@ -1,52 +1,36 @@
 
-import { useState } from "react";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday, isSameMonth, isWeekend, getDay, add } from "date-fns";
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday, isSameMonth, isWeekend, getDay, add, parseISO } from "date-fns";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, X, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
-// Sample class schedule data
-const classSchedule = [
-  {
-    id: 1,
-    title: "Gentle Yin Flow",
-    date: add(new Date(), { days: 1 }),
-    time: "18:00 - 19:15",
-    location: "Harmony Studio"
-  },
-  {
-    id: 2,
-    title: "Deep Stretch Yin",
-    date: add(new Date(), { days: 3 }),
-    time: "10:00 - 11:15",
-    location: "Serenity Center"
-  },
-  {
-    id: 3,
-    title: "Yin & Meditation",
-    date: add(new Date(), { days: 5 }),
-    time: "19:30 - 20:45",
-    location: "Harmony Studio"
-  },
-  {
-    id: 4,
-    title: "Restorative Yin",
-    date: add(new Date(), { days: 8 }),
-    time: "17:30 - 18:45",
-    location: "Serenity Center"
-  },
-  {
-    id: 5,
-    title: "Morning Yin",
-    date: add(new Date(), { days: 10 }),
-    time: "08:00 - 09:15",
-    location: "Harmony Studio"
-  }
-];
+// Types for our data
+interface ClassType {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+}
+
+interface ClassTime {
+  id: string;
+  class_id: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  available_spots: number;
+  class: ClassType; // Joined class data
+}
 
 const Schedule = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState<ClassTime | null>(null);
+  const [classSchedule, setClassSchedule] = useState<ClassTime[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
@@ -55,6 +39,53 @@ const Schedule = () => {
   // Create array with empty cells for proper calendar grid alignment
   const startDay = getDay(monthStart);
   const blanks = Array.from({ length: startDay }, (_, i) => i);
+
+  // Fetch class data from Supabase
+  useEffect(() => {
+    const fetchClassData = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        // Query class times for the current month with joined class data
+        const startDate = startOfMonth(currentMonth).toISOString();
+        const endDate = endOfMonth(currentMonth).toISOString();
+        
+        const { data, error } = await supabase
+          .from('class_times')
+          .select(`
+            id,
+            class_id,
+            date,
+            start_time,
+            end_time,
+            available_spots,
+            class:classes(id, title, description, location)
+          `)
+          .gte('date', startDate)
+          .lte('date', endDate)
+          .order('date', { ascending: true });
+          
+        if (error) throw error;
+        
+        // Transform the data for our component
+        const formattedData = data.map(item => ({
+          ...item,
+          class: item.class as ClassType
+        }));
+        
+        setClassSchedule(formattedData);
+      } catch (err) {
+        console.error('Error fetching class data:', err);
+        setError('Could not load class schedule. Please try again later.');
+        toast.error('Failed to load class schedule');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchClassData();
+  }, [currentMonth]);
 
   const nextMonth = () => {
     setCurrentMonth(add(currentMonth, { months: 1 }));
@@ -65,13 +96,15 @@ const Schedule = () => {
   };
 
   // Check if a class is scheduled on a specific date
-  const getClassesForDate = (date) => {
-    return classSchedule.filter(
-      (event) => 
-        event.date.getDate() === date.getDate() && 
-        event.date.getMonth() === date.getMonth() && 
-        event.date.getFullYear() === date.getFullYear()
-    );
+  const getClassesForDate = (date: Date) => {
+    return classSchedule.filter(event => {
+      const eventDate = parseISO(event.date);
+      return (
+        eventDate.getDate() === date.getDate() && 
+        eventDate.getMonth() === date.getMonth() && 
+        eventDate.getFullYear() === date.getFullYear()
+      );
+    });
   };
 
   return (
@@ -100,57 +133,82 @@ const Schedule = () => {
               </Button>
             </div>
             
-            {/* Calendar Grid */}
-            <div className="grid grid-cols-7 gap-2 mb-4">
-              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-                <div key={day} className="text-center font-medium text-gray-500 text-sm py-2">
-                  {day}
-                </div>
-              ))}
-            </div>
+            {/* Loading State */}
+            {loading && (
+              <div className="flex justify-center items-center py-20">
+                <Loader2 className="h-8 w-8 animate-spin text-yin" />
+                <span className="ml-2 text-yin">Loading schedule...</span>
+              </div>
+            )}
             
-            <div className="grid grid-cols-7 gap-2">
-              {blanks.map((blank) => (
-                <div key={`blank-${blank}`} className="h-20 p-1 bg-gray-50 rounded-md opacity-50"></div>
-              ))}
-              
-              {days.map((day) => {
-                const classes = getClassesForDate(day);
-                const hasClass = classes.length > 0;
-                
-                return (
-                  <div 
-                    key={day.toString()}
-                    className={cn(
-                      "min-h-20 p-1 rounded-md relative border border-gray-100",
-                      isToday(day) ? "bg-yin-light/50 border-yin" : "",
-                      !isSameMonth(day, currentMonth) ? "opacity-50" : "",
-                      isWeekend(day) ? "bg-gray-50" : "",
-                      hasClass ? "ring-1 ring-yin" : ""
-                    )}
-                  >
-                    <div className="text-right font-medium text-sm mb-1 p-1">
-                      {format(day, "d")}
+            {/* Error State */}
+            {error && !loading && (
+              <div className="text-center py-10">
+                <p className="text-red-500 mb-4">{error}</p>
+                <Button 
+                  onClick={() => window.location.reload()}
+                  variant="outline"
+                >
+                  Try Again
+                </Button>
+              </div>
+            )}
+            
+            {/* Calendar Grid */}
+            {!loading && !error && (
+              <>
+                <div className="grid grid-cols-7 gap-2 mb-4">
+                  {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+                    <div key={day} className="text-center font-medium text-gray-500 text-sm py-2">
+                      {day}
                     </div>
+                  ))}
+                </div>
+                
+                <div className="grid grid-cols-7 gap-2">
+                  {blanks.map((blank) => (
+                    <div key={`blank-${blank}`} className="h-20 p-1 bg-gray-50 rounded-md opacity-50"></div>
+                  ))}
+                  
+                  {days.map((day) => {
+                    const classes = getClassesForDate(day);
+                    const hasClass = classes.length > 0;
                     
-                    {hasClass && (
-                      <div className="px-1">
-                        {classes.map((classEvent) => (
-                          <div 
-                            key={classEvent.id}
-                            className="calendar-event text-xs cursor-pointer"
-                            onClick={() => setSelectedEvent(classEvent)}
-                          >
-                            <div className="font-medium text-yin-deep truncate">{classEvent.title}</div>
-                            <div className="text-gray-600 truncate">{classEvent.time}</div>
+                    return (
+                      <div 
+                        key={day.toString()}
+                        className={cn(
+                          "min-h-20 p-1 rounded-md relative border border-gray-100",
+                          isToday(day) ? "bg-yin-light/50 border-yin" : "",
+                          !isSameMonth(day, currentMonth) ? "opacity-50" : "",
+                          isWeekend(day) ? "bg-gray-50" : "",
+                          hasClass ? "ring-1 ring-yin" : ""
+                        )}
+                      >
+                        <div className="text-right font-medium text-sm mb-1 p-1">
+                          {format(day, "d")}
+                        </div>
+                        
+                        {hasClass && (
+                          <div className="px-1">
+                            {classes.map((classEvent) => (
+                              <div 
+                                key={classEvent.id}
+                                className="calendar-event text-xs cursor-pointer hover:bg-yin-light/20 p-1 rounded"
+                                onClick={() => setSelectedEvent(classEvent)}
+                              >
+                                <div className="font-medium text-yin-deep truncate">{classEvent.class.title}</div>
+                                <div className="text-gray-600 truncate">{classEvent.start_time} - {classEvent.end_time}</div>
+                              </div>
+                            ))}
                           </div>
-                        ))}
+                        )}
                       </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+                    );
+                  })}
+                </div>
+              </>
+            )}
           </div>
           
           {/* Legend and Info */}
@@ -189,10 +247,10 @@ const Schedule = () => {
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h3 className="text-xl font-serif font-medium text-yin-text">
-                    {selectedEvent.title}
+                    {selectedEvent.class.title}
                   </h3>
                   <p className="text-gray-700">
-                    {format(selectedEvent.date, "EEEE, MMMM d, yyyy")}
+                    {format(parseISO(selectedEvent.date), "EEEE, MMMM d, yyyy")}
                   </p>
                 </div>
                 <Button 
@@ -207,17 +265,24 @@ const Schedule = () => {
               <div className="grid md:grid-cols-3 gap-4 mb-6">
                 <div>
                   <p className="text-sm text-gray-500">Time</p>
-                  <p className="font-medium">{selectedEvent.time}</p>
+                  <p className="font-medium">{selectedEvent.start_time} - {selectedEvent.end_time}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Location</p>
-                  <p className="font-medium">{selectedEvent.location}</p>
+                  <p className="font-medium">{selectedEvent.class.location}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Available Spots</p>
-                  <p className="font-medium">8</p>
+                  <p className="font-medium">{selectedEvent.available_spots}</p>
                 </div>
               </div>
+              
+              {selectedEvent.class.description && (
+                <div className="mb-6">
+                  <p className="text-sm text-gray-500">Description</p>
+                  <p className="text-gray-700">{selectedEvent.class.description}</p>
+                </div>
+              )}
               
               <div className="flex justify-end">
                 <Button 
