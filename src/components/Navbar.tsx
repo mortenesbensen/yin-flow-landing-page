@@ -22,11 +22,11 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { title: "Home", href: "#home" },
-    { title: "About", href: "#about" },
+    { title: "Hjem", href: "#home" },
+    { title: "Om Mig", href: "#about" },
     { title: "Yin Yoga", href: "#yin-yoga" },
-    { title: "Schedule", href: "#schedule" },
-    { title: "Contact", href: "#contact" },
+    { title: "Holdplan", href: "#schedule" },
+    { title: "Kontakt", href: "#contact" },
   ];
 
   return (
@@ -61,7 +61,7 @@ const Navbar = () => {
             className="bg-yin hover:bg-yin-dark text-white"
             onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
           >
-            Book Now
+            Book Nu
           </Button>
         </div>
 
@@ -94,7 +94,7 @@ const Navbar = () => {
                 setIsOpen(false);
               }}
             >
-              Book Now
+              Book Nu
             </Button>
           </div>
         </div>

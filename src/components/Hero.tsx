@@ -8,10 +8,10 @@ const Hero = () => {
         <div className="grid md:grid-cols-2 gap-10 items-center">
           <div className="order-2 md:order-1 animate-fade-in opacity-0" style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-semibold leading-tight text-yin-text mb-4">
-              Find Balance & Inner Peace with Yin Yoga
+              Find Balance & Indre Ro med Yin Yoga
             </h1>
             <p className="text-lg text-gray-700 mb-8 max-w-xl">
-              Discover the transformative practice that connects body, mind, and spirit through deep, restorative poses.
+              Opdag den transformerende praksis, der forbinder krop, sind og ånd gennem dybe, genopbyggende stillinger.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
@@ -19,7 +19,7 @@ const Hero = () => {
                 className="bg-yin hover:bg-yin-dark text-white"
                 onClick={() => document.getElementById("schedule")?.scrollIntoView({ behavior: "smooth" })}
               >
-                View Schedule
+                Se Holdplan
               </Button>
               <Button 
                 size="lg" 
@@ -27,7 +27,7 @@ const Hero = () => {
                 className="border-yin text-yin hover:bg-yin/10"
                 onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
               >
-                Contact Me
+                Kontakt Mig
               </Button>
             </div>
           </div>
@@ -35,7 +35,7 @@ const Hero = () => {
             <div className="w-full max-w-md rounded-2xl overflow-hidden shadow-xl transform hover:scale-[1.02] transition-transform duration-300">
               <img 
                 src="https://images.unsplash.com/photo-1545389336-cf090694435e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" 
-                alt="Person in yin yoga pose" 
+                alt="Person i yin yoga stilling" 
                 className="w-full h-full object-cover" 
               />
             </div>
