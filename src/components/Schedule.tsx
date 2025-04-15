@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday, isSameMonth, isWeekend, getDay, add, parseISO } from "date-fns";
+import { da } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, X, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
@@ -40,6 +41,9 @@ const Schedule = () => {
   const startDay = getDay(monthStart);
   const blanks = Array.from({ length: startDay }, (_, i) => i);
 
+  // Translation map for weekday names
+  const weekdayNames = ["Søn", "Man", "Tirs", "Ons", "Tors", "Fre", "Lør"];
+
   // Fetch class data from Supabase
   useEffect(() => {
     const fetchClassData = async () => {
@@ -76,9 +80,9 @@ const Schedule = () => {
         
         setClassSchedule(formattedData);
       } catch (err) {
-        console.error('Error fetching class data:', err);
-        setError('Could not load class schedule. Please try again later.');
-        toast.error('Failed to load class schedule');
+        console.error('Fejl ved hentning af holddata:', err);
+        setError('Kunne ikke indlæse holdplanen. Prøv venligst igen senere.');
+        toast.error('Kunne ikke indlæse holdplanen');
       } finally {
         setLoading(false);
       }
@@ -111,10 +115,10 @@ const Schedule = () => {
     <section id="schedule" className="py-20 px-4 bg-white">
       <div className="container mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-serif font-semibold mb-6 text-yin-text">Class Schedule</h2>
+          <h2 className="text-3xl md:text-4xl font-serif font-semibold mb-6 text-yin-text">Holdplan</h2>
           <p className="text-lg text-gray-700 max-w-3xl mx-auto">
-            Join me for a transformative Yin Yoga experience. Classes are designed for all levels, 
-            from beginners to advanced practitioners. Find a time that works for you and begin your journey to balance and wellness.
+            Deltag i en transformerende Yin Yoga oplevelse. Holdene er designet for alle niveauer, 
+            fra begyndere til øvede udøvere. Find et tidspunkt, der passer dig, og begynd din rejse mod balance og velvære.
           </p>
         </div>
         
@@ -126,7 +130,7 @@ const Schedule = () => {
                 <ChevronLeft size={20} />
               </Button>
               <h3 className="text-xl font-serif font-medium">
-                {format(currentMonth, "MMMM yyyy")}
+                {format(currentMonth, "MMMM yyyy", { locale: da })}
               </h3>
               <Button variant="ghost" size="sm" onClick={nextMonth}>
                 <ChevronRight size={20} />
@@ -137,7 +141,7 @@ const Schedule = () => {
             {loading && (
               <div className="flex justify-center items-center py-20">
                 <Loader2 className="h-8 w-8 animate-spin text-yin" />
-                <span className="ml-2 text-yin">Loading schedule...</span>
+                <span className="ml-2 text-yin">Indlæser holdplan...</span>
               </div>
             )}
             
@@ -149,7 +153,7 @@ const Schedule = () => {
                   onClick={() => window.location.reload()}
                   variant="outline"
                 >
-                  Try Again
+                  Prøv igen
                 </Button>
               </div>
             )}
@@ -158,7 +162,7 @@ const Schedule = () => {
             {!loading && !error && (
               <>
                 <div className="grid grid-cols-7 gap-2 mb-4">
-                  {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+                  {weekdayNames.map((day) => (
                     <div key={day} className="text-center font-medium text-gray-500 text-sm py-2">
                       {day}
                     </div>
@@ -216,25 +220,25 @@ const Schedule = () => {
             <div className="flex items-center gap-6 mb-4">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded-full bg-yin-light border border-yin"></div>
-                <span className="text-sm text-gray-700">Today</span>
+                <span className="text-sm text-gray-700">I dag</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded-sm bg-yin/20 border border-yin"></div>
-                <span className="text-sm text-gray-700">Class Scheduled</span>
+                <span className="text-sm text-gray-700">Hold planlagt</span>
               </div>
             </div>
             
             <div className="flex justify-between items-center">
               <div className="text-sm text-gray-600 flex items-center gap-2">
                 <CalendarIcon size={16} className="text-yin" />
-                Click on a class to see details
+                Klik på et hold for at se detaljer
               </div>
               <Button 
                 size="sm" 
                 className="bg-yin hover:bg-yin-dark text-white"
                 onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
               >
-                Book a Class
+                Book et hold
               </Button>
             </div>
           </div>
@@ -250,7 +254,7 @@ const Schedule = () => {
                     {selectedEvent.class.title}
                   </h3>
                   <p className="text-gray-700">
-                    {format(parseISO(selectedEvent.date), "EEEE, MMMM d, yyyy")}
+                    {format(parseISO(selectedEvent.date), "EEEE, d. MMMM yyyy", { locale: da })}
                   </p>
                 </div>
                 <Button 
@@ -264,22 +268,22 @@ const Schedule = () => {
               
               <div className="grid md:grid-cols-3 gap-4 mb-6">
                 <div>
-                  <p className="text-sm text-gray-500">Time</p>
+                  <p className="text-sm text-gray-500">Tidspunkt</p>
                   <p className="font-medium">{selectedEvent.start_time} - {selectedEvent.end_time}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Location</p>
+                  <p className="text-sm text-gray-500">Lokation</p>
                   <p className="font-medium">{selectedEvent.class.location}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Available Spots</p>
+                  <p className="text-sm text-gray-500">Ledige pladser</p>
                   <p className="font-medium">{selectedEvent.available_spots}</p>
                 </div>
               </div>
               
               {selectedEvent.class.description && (
                 <div className="mb-6">
-                  <p className="text-sm text-gray-500">Description</p>
+                  <p className="text-sm text-gray-500">Beskrivelse</p>
                   <p className="text-gray-700">{selectedEvent.class.description}</p>
                 </div>
               )}
@@ -289,7 +293,7 @@ const Schedule = () => {
                   className="bg-yin hover:bg-yin-dark text-white"
                   onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
                 >
-                  Reserve Your Spot
+                  Reserver din plads
                 </Button>
               </div>
             </div>

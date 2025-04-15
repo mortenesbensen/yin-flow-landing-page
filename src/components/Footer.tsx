@@ -5,14 +5,14 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
   
   return (
-    <footer className="bg-yin-light/50 text-yin-deep py-10 px-4">
+    <footer className="bg-yin-light/20 text-yin-deep py-10 px-4">
       <div className="container mx-auto">
         <div className="grid md:grid-cols-3 gap-10">
           <div>
             <h3 className="text-xl font-serif font-medium mb-4">Line Jakobsen Yin Yoga</h3>
             <p className="text-yin-text mb-4">
-              Discover the transformative practice of Yin Yoga, where stillness becomes strength 
-              and balance leads to growth.
+              Opdag den transformerende praksis af Yin Yoga, hvor stilhed bliver til styrke 
+              og balance fører til vækst.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-yin-deep hover:text-yin transition-colors">
@@ -28,16 +28,16 @@ const Footer = () => {
           </div>
           
           <div>
-            <h3 className="text-xl font-serif font-medium mb-4">Quick Links</h3>
+            <h3 className="text-xl font-serif font-medium mb-4">Hurtige Links</h3>
             <ul className="space-y-2">
               <li>
                 <a href="#home" className="text-yin-text hover:text-yin-deep transition-colors">
-                  Home
+                  Hjem
                 </a>
               </li>
               <li>
                 <a href="#about" className="text-yin-text hover:text-yin-deep transition-colors">
-                  About Me
+                  Om Mig
                 </a>
               </li>
               <li>
@@ -47,30 +47,30 @@ const Footer = () => {
               </li>
               <li>
                 <a href="#schedule" className="text-yin-text hover:text-yin-deep transition-colors">
-                  Class Schedule
+                  Holdplan
                 </a>
               </li>
               <li>
                 <a href="#contact" className="text-yin-text hover:text-yin-deep transition-colors">
-                  Contact
+                  Kontakt
                 </a>
               </li>
             </ul>
           </div>
           
           <div>
-            <h3 className="text-xl font-serif font-medium mb-4">Newsletter</h3>
+            <h3 className="text-xl font-serif font-medium mb-4">Nyhedsbrev</h3>
             <p className="text-yin-text mb-4">
-              Subscribe to receive updates on new classes, workshops, and mindfulness tips.
+              Tilmeld dig for at modtage opdateringer om nye hold, workshops og mindfulness tips.
             </p>
             <form className="flex">
               <input 
                 type="email" 
-                placeholder="Your email" 
+                placeholder="Din email" 
                 className="px-4 py-2 rounded-l-md bg-white text-yin-text w-full focus:outline-none border border-yin/20"
               />
               <button type="submit" className="bg-yin hover:bg-yin-dark text-white px-4 py-2 rounded-r-md transition-colors">
-                Subscribe
+                Tilmeld
               </button>
             </form>
           </div>
@@ -78,10 +78,10 @@ const Footer = () => {
         
         <div className="border-t border-yin/20 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
           <p className="text-yin-text/80 text-sm">
-            © {currentYear} Line Jakobsen Yin Yoga. All rights reserved.
+            © {currentYear} Line Jakobsen Yin Yoga. Alle rettigheder forbeholdes.
           </p>
           <p className="text-yin-text/80 text-sm flex items-center">
-            Made with <Heart size={14} className="mx-1 text-yin" /> for your wellness journey
+            Lavet med <Heart size={14} className="mx-1 text-yin" /> til din velvære rejse
           </p>
         </div>
       </div>
