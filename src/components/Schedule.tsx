@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday, isSameMonth, isWeekend, getDay, add, parseISO } from "date-fns";
-import { da } from 'date-fns/locale';
+import { da } from 'date-fns/locale/da';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, X, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
@@ -99,7 +99,7 @@ const Schedule = () => {
   };
 
   // Check if a class is scheduled on a specific date
-  const getClassesForDate = (date: Date) => {
+  const getClassesForDate = (date) => {
     return classSchedule.filter(event => {
       const eventDate = parseISO(event.date);
       return (
