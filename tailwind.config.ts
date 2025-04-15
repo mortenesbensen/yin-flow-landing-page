@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -25,8 +26,8 @@ export default {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         primary: {
-          DEFAULT: 'hsl(10, 80%, 90%)', // Softer, lighter coral
-          foreground: 'hsl(10, 50%, 20%)'
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))'
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
@@ -63,16 +64,16 @@ export default {
           ring: 'hsl(var(--sidebar-ring))'
         },
         yin: {
-          light: '#FDE1D3', // Soft peach
-          DEFAULT: '#FFDEE2', // Soft pink
-          dark: '#CD5C5C', // Indian red
-          deep: '#8B4513', // Saddle brown (for deep text)
-          text: '#2F4F4F' // Dark slate gray
+          light: '#F8E7DC', // Soft light terracotta/cream
+          DEFAULT: '#E2A78F', // Medium terracotta
+          dark: '#C67C5D',   // Deep terracotta
+          deep: '#5C3C31',   // Rich brown for text
+          text: '#3E332C'    // Dark brown-gray for body text
         },
         sage: {
-          light: '#F5F5DC', // Beige
-          DEFAULT: '#D2B48C', // Tan
-          dark: '#8B7355' // Soft brown
+          light: '#E8ECDF', // Light sage
+          DEFAULT: '#C2C8B2', // Medium sage
+          dark: '#7D8471'    // Deep sage
         }
       },
       borderRadius: {
