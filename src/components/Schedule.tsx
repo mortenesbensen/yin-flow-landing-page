@@ -6,24 +6,8 @@ import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-
-// Types for our data
-interface ClassType {
-  id: string;
-  title: string;
-  description: string;
-  location: string;
-}
-
-interface ClassTime {
-  id: string;
-  class_id: string;
-  date: string;
-  start_time: string;
-  end_time: string;
-  available_spots: number;
-  class: ClassType; // Joined class data
-}
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "./ui/dialog";
+import { ClassTime } from "@/types/yoga";
 
 const Schedule = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -36,21 +20,17 @@ const Schedule = () => {
   const monthEnd = endOfMonth(currentMonth);
   const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
   
-  // Create array with empty cells for proper calendar grid alignment
   const startDay = getDay(monthStart);
   const blanks = Array.from({ length: startDay }, (_, i) => i);
 
-  // Translation map for weekday names
   const weekdayNames = ["Søn", "Man", "Tirs", "Ons", "Tors", "Fre", "Lør"];
 
-  // Fetch class data from Supabase
   useEffect(() => {
     const fetchClassData = async () => {
       setLoading(true);
       setError(null);
       
       try {
-        // Query class times for the current month with joined class data
         const startDate = startOfMonth(currentMonth).toISOString();
         const endDate = endOfMonth(currentMonth).toISOString();
         
@@ -71,7 +51,6 @@ const Schedule = () => {
           
         if (error) throw error;
         
-        // Transform the data for our component
         const formattedData = data.map(item => ({
           ...item,
           class: item.class as ClassType
@@ -98,7 +77,6 @@ const Schedule = () => {
     setCurrentMonth(add(currentMonth, { months: -1 }));
   };
 
-  // Check if a class is scheduled on a specific date
   const getClassesForDate = (date) => {
     return classSchedule.filter(event => {
       const eventDate = parseISO(event.date);
@@ -123,7 +101,6 @@ const Schedule = () => {
         
         <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
           <div className="p-6">
-            {/* Calendar Header */}
             <div className="flex items-center justify-between mb-6">
               <Button variant="ghost" size="sm" onClick={prevMonth}>
                 <ChevronLeft size={20} />
@@ -136,7 +113,6 @@ const Schedule = () => {
               </Button>
             </div>
             
-            {/* Loading State */}
             {loading && (
               <div className="flex justify-center items-center py-20">
                 <Loader2 className="h-8 w-8 animate-spin text-yin" />
@@ -144,7 +120,6 @@ const Schedule = () => {
               </div>
             )}
             
-            {/* Error State */}
             {error && !loading && (
               <div className="text-center py-10">
                 <p className="text-red-500 mb-4">{error}</p>
@@ -157,7 +132,6 @@ const Schedule = () => {
               </div>
             )}
             
-            {/* Calendar Grid */}
             {!loading && !error && (
               <>
                 <div className="grid grid-cols-7 gap-2 mb-4">
@@ -214,7 +188,6 @@ const Schedule = () => {
             )}
           </div>
           
-          {/* Legend and Info */}
           <div className="bg-gray-50 p-6 border-t border-gray-100">
             <div className="flex items-center gap-6 mb-4">
               <div className="flex items-center gap-2">
@@ -243,7 +216,6 @@ const Schedule = () => {
           </div>
         </div>
         
-        {/* Selected Event Details */}
         {selectedEvent && (
           <div className="mt-8 max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden animate-fade-in">
             <div className="p-6">
