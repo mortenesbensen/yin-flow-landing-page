@@ -6,8 +6,8 @@ import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "./ui/dialog";
-import { ClassTime } from "@/types/yoga";
+import { ClassTime, ClassType } from "@/types/yoga";
+import EventDetailsModal from "./EventDetailsModal";
 
 const Schedule = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
