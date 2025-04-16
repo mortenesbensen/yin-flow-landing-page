@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday, isSameMonth, isWeekend, getDay, add, parseISO } from "date-fns";
 import { da } from 'date-fns/locale/da';
@@ -216,60 +217,12 @@ const Schedule = () => {
           </div>
         </div>
         
-        {selectedEvent && (
-          <div className="mt-8 max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden animate-fade-in">
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-xl font-serif font-medium text-yin-text">
-                    {selectedEvent.class.title}
-                  </h3>
-                  <p className="text-gray-700">
-                    {format(parseISO(selectedEvent.date), "EEEE, d. MMMM yyyy", { locale: da })}
-                  </p>
-                </div>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => setSelectedEvent(null)}
-                >
-                  <X size={18} />
-                </Button>
-              </div>
-              
-              <div className="grid md:grid-cols-3 gap-4 mb-6">
-                <div>
-                  <p className="text-sm text-gray-500">Tidspunkt</p>
-                  <p className="font-medium">{selectedEvent.start_time} - {selectedEvent.end_time}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Lokation</p>
-                  <p className="font-medium">{selectedEvent.class.location}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Ledige pladser</p>
-                  <p className="font-medium">{selectedEvent.available_spots}</p>
-                </div>
-              </div>
-              
-              {selectedEvent.class.description && (
-                <div className="mb-6">
-                  <p className="text-sm text-gray-500">Beskrivelse</p>
-                  <p className="text-gray-700">{selectedEvent.class.description}</p>
-                </div>
-              )}
-              
-              <div className="flex justify-end">
-                <Button 
-                  className="bg-yin hover:bg-yin-dark text-white"
-                  onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-                >
-                  Reserver din plads
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Use the EventDetailsModal component instead of inline details */}
+        <EventDetailsModal 
+          event={selectedEvent} 
+          isOpen={selectedEvent !== null}
+          onClose={() => setSelectedEvent(null)}
+        />
       </div>
     </section>
   );
