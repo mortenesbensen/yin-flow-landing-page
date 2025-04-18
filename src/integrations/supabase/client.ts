@@ -3,11 +3,30 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-// Define default values for the Supabase URL and key in case environment variables are not set
-const SUPABASE_URL = "https://lejhbkimfrpuiepgmuoa.supabase.co" || "";
-const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxlamhia2ltZnJwdWllcGdtdW9hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ0OTAyODIsImV4cCI6MjA2MDA2NjI4Mn0.FenMb84PhLw61WLj8AFBfJVdmr8Wyni4-12PRT2fNik" || "";
+// Create a dummy client if environment variables are not set
+const createDummyClient = () => ({
+  from: () => ({
+    select: () => Promise.resolve({ data: [], error: null }),
+    insert: () => Promise.resolve({ data: null, error: null }),
+    update: () => Promise.resolve({ data: null, error: null }),
+    delete: () => Promise.resolve({ data: null, error: null }),
+  }),
+  auth: {
+    getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+    onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } }, error: null }),
+  },
+});
 
-// Import the supabase client like this:
-// import { supabase } from "@/integrations/supabase/client";
+// Check if required environment variables are available
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+// Create either a real Supabase client or a dummy client
+export const supabase = SUPABASE_URL && SUPABASE_ANON_KEY
+  ? createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : createDummyClient() as any;
+
+// Log a warning if Supabase is not configured
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  console.warn('Supabase environment variables are not set. Some features will be disabled.');
+}
