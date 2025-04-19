@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,9 +8,7 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 // Make sure this matches the base path in vite.config.ts
-const basePath = process.env.NODE_ENV === 'production' 
-  ? '/yin-flow-landing-page/' 
-  : '/';
+const basePath = import.meta.env.BASE_URL;
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
