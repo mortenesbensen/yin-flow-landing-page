@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 
-const base = process.env.BASE_PATH || "/";
+const base = process.env.VITE_BASE_PATH || "/";
 
 export default defineConfig(({ mode }) => ({
   server: {
